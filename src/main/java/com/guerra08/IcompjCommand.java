@@ -15,7 +15,7 @@ public class IcompjCommand implements Runnable {
     @Parameters(paramLabel = "<path>", description = "Path of the file(s).")
     String path;
 
-    @Option(names = {"-l, --level"}, description = "The level of quality, from 0.0 (highest compression) to 1.0 (highest quality). 0.8 is the default.")
+    @Option(names = {"-l", "--level"}, description = "The level of quality, from 0.0 (highest compression) to 1.0 (highest quality). 0.8 is the default.")
     float qualityLevel = 0.8f;
 
     @Override
