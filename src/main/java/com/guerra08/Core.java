@@ -12,9 +12,8 @@ import java.nio.file.Paths;
 
 public final class Core {
 
-    private static final String SUFFIX = "comp";
+    private static final String COMPRESSION_SUFFIX = "comp";
 
-    // TODO: Clean this up
     public static void compress(String pathString, float qualityLevel) throws IOException {
         var path = Paths.get(pathString);
         if (Files.isRegularFile(path)) {
@@ -41,7 +40,7 @@ public final class Core {
     }
 
     private static String buildOutputFileName(String pathString) {
-        return getNameOfFile(pathString) + "." + SUFFIX + "." + getExtensionOfFile(pathString);
+        return getNameOfFile(pathString) + "." + COMPRESSION_SUFFIX + "." + getExtensionOfFile(pathString);
     }
 
     private static String getNameOfFile(String pathString) {
