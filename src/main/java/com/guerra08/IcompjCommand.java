@@ -4,12 +4,10 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
-import java.io.IOException;
-
 @Command(name = "icompj",
-        mixinStandardHelpOptions = true,
-        description = "icompj is a tool to help you compress images in the terminal.",
-        version = "0.0.1")
+    mixinStandardHelpOptions = true,
+    description = "icompj is a tool to help you compress images in the terminal.",
+    version = "0.0.1")
 public class IcompjCommand implements Runnable {
 
     @Parameters(paramLabel = "<path>", description = "Path of the file(s).")
@@ -20,11 +18,8 @@ public class IcompjCommand implements Runnable {
 
     @Override
     public void run() {
-        try {
-            Core.compress(path, qualityLevel);
-        } catch (IOException e) {
-            System.err.println("Unable to compress file(s).");
-        }
+        System.out.println("Compressing...");
+        Core.compress(path, qualityLevel);
     }
 
 }

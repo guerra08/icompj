@@ -8,18 +8,34 @@ import javax.imageio.stream.ImageOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public final class Core {
 
     private static final String COMPRESSION_SUFFIX = "comp";
 
-    public static void compress(String pathString, float qualityLevel) throws IOException {
+    public static void compress(String pathString, float qualityLevel) {
         var path = Paths.get(pathString);
         if (Files.isRegularFile(path)) {
+            compressFile(path, qualityLevel);
+        } else {
+            try (var paths = Files.walk(path)) {
+                // For multiple files, we can check for usage of parallelism, while also maintaining good performance and CPU usage
+                paths
+                    .filter(Files::isRegularFile)
+                    .forEach(p -> compressFile(p, qualityLevel));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private static void compressFile(Path path, float qualityLevel) {
+        try {
             var file = path.toFile();
             var input = ImageIO.read(file);
-            var outputStream = new FileOutputStream(buildOutputFileName(pathString));
+            var outputStream = new FileOutputStream(buildOutputFileName(path.toString()));
 
             var writers = ImageIO.getImageWritersByFormatName("jpg");
             var writer = (ImageWriter) writers.next();
@@ -36,7 +52,11 @@ public final class Core {
             outputStream.close();
             imageOutputStream.close();
             writer.dispose();
+        } catch (Exception e) {
+            // Maybe log here?
+            throw new RuntimeException(e);
         }
+
     }
 
     private static String buildOutputFileName(String pathString) {
