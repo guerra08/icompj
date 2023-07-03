@@ -10,7 +10,7 @@ import picocli.CommandLine.Parameters;
     version = "0.0.1")
 public class IcompjCommand implements Runnable {
 
-    @Parameters(paramLabel = "<path>", description = "Path of the file(s).")
+    @Parameters(paramLabel = "<path>", description = "Path of the file or directory. Currently accepts [jpg/jpeg and png] images.")
     String path;
 
     @Option(names = {"-l", "--level"}, description = "The level of quality, from 0.0 (highest compression) to 1.0 (highest quality). 0.8 is the default.")
@@ -18,7 +18,6 @@ public class IcompjCommand implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("Compressing...");
         Core.compress(path, qualityLevel);
     }
 

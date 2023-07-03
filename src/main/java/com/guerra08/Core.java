@@ -1,5 +1,7 @@
 package com.guerra08;
 
+import picocli.CommandLine.Help.Ansi;
+
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
@@ -10,20 +12,25 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Set;
 
 public final class Core {
 
     private static final String COMPRESSION_SUFFIX = "comp";
+    private static final Set<String> ACCEPTED_FORMATS = Set.of("jpg", "jpeg", "png");
 
     public static void compress(String pathString, float qualityLevel) {
         var path = Paths.get(pathString);
         if (Files.isRegularFile(path)) {
-            compressFile(path, qualityLevel);
+            if (hasValidFormat(path)) {
+                compressFile(path, qualityLevel);
+            }
         } else {
             try (var paths = Files.walk(path)) {
-                // For multiple files, we can check for usage of parallelism, while also maintaining good performance and CPU usage
                 paths
-                    .filter(Files::isRegularFile)
+                    .toList()
+                    .parallelStream()
+                    .filter(p -> Files.isRegularFile(p) && hasValidFormat(p))
                     .forEach(p -> compressFile(p, qualityLevel));
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -33,6 +40,8 @@ public final class Core {
 
     private static void compressFile(Path path, float qualityLevel) {
         try {
+            String compressingMessage = Ansi.AUTO.string("Compressing @|bold " + path.toString() + "|@...");
+            System.out.println(compressingMessage);
             var file = path.toFile();
             var input = ImageIO.read(file);
             var outputStream = new FileOutputStream(buildOutputFileName(path.toString()));
@@ -53,10 +62,15 @@ public final class Core {
             imageOutputStream.close();
             writer.dispose();
         } catch (Exception e) {
-            // Maybe log here?
+            String errorMessage = Ansi.AUTO.string("@|red,bold Unable to compress file " + path + ".|@");
+            System.out.println(errorMessage);
             throw new RuntimeException(e);
         }
 
+    }
+
+    private static boolean hasValidFormat(Path path) {
+        return ACCEPTED_FORMATS.contains(getExtensionOfFile(path.toString()));
     }
 
     private static String buildOutputFileName(String pathString) {
