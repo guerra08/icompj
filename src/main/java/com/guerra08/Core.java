@@ -20,6 +20,8 @@ import static com.guerra08.FileUtils.getExtensionOfFile;
 import static com.guerra08.FileUtils.getNameOfFile;
 
 public final class Core {
+    private Core() {
+    }
 
     public static void compress(String pathString, float qualityLevel) {
         Objects.requireNonNull(pathString);

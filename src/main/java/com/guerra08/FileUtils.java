@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Objects;
 
 public final class FileUtils {
+    private FileUtils() {
+    }
 
     public static List<Path> getPaths(String path) throws IOException {
         Objects.requireNonNull(path);
