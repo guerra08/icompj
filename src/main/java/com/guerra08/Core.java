@@ -10,6 +10,7 @@ import javax.imageio.stream.ImageOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -21,6 +22,7 @@ import static com.guerra08.FileUtils.getNameOfFile;
 public final class Core {
 
     public static void compress(String pathString, float qualityLevel) {
+        Objects.requireNonNull(pathString);
         try {
             FileUtils.getPaths(pathString)
                 .parallelStream()

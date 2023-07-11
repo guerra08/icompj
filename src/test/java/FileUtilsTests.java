@@ -1,10 +1,8 @@
 import com.guerra08.FileUtils;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -12,12 +10,9 @@ class FileUtilsTests {
 
     @Test
     void getPaths_return_list_with_single_path() {
-        Path resourceDirectory = Paths.get("src", "test", "resources");
-        String absolutePath = resourceDirectory.toFile().getAbsolutePath();
-        String originalFilePath = absolutePath + File.separator + "sample.jpg";
-
+        String path = Objects.requireNonNull(getClass().getClassLoader().getResource("sample.jpg")).getPath();
         try {
-            var result = FileUtils.getPaths(originalFilePath);
+            var result = FileUtils.getPaths(path);
             assertEquals(1, result.size());
         } catch (IOException e) {
             throw new RuntimeException(e);
